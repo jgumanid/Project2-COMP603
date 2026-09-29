@@ -18,6 +18,9 @@ public class Board extends JPanel {
     public Image board;
     private PlayableSquares[][] squares = new PlayableSquares[8][8];
     
+    private Movement movement;
+    private PlayableSquares selectedSquare;
+    
     //constructor
     public Board() {
         
@@ -49,26 +52,44 @@ public class Board extends JPanel {
                 }
             }
         }
-
-        // Add some pieces
-        Piece blackPiece = new Piece("black" , false, "./resources/black.png");
-
-        Piece whitePiece = new Piece("white", false, "./resources/white.png");
         
         //black piece
         for (int row = 0; row <= 2; row++) {
             for (int col = (row % 2 == 0 ? 1 : 0); col < 8; col += 2) {
+                //Add black pieces (moved inside to make them all separate pieces (was only running once before))
+                Piece blackPiece = new Piece("black" , false, "./resources/black.png");
                 squares[row][col].setPiece(blackPiece);
             }
         }
+
+        
         
         //white piece
         for (int row = 7; row >= 5; row--) {
             for (int col = (row % 2 == 0 ? 1 : 0); col < 8; col += 2) {
+            //Add white pieces (moved inside to make them all separate pieces (was only running once before))
+                Piece whitePiece = new Piece("white", false, "./resources/white.png");
                 squares[row][col].setPiece(whitePiece);
             }
         }
-
+        
+        //movement
+        movement = new Movement(this);
+        
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                
+                if (squares[row][col] != null) {
+                    
+                    final int currentRow = row;
+                    final int currentCol = col;
+                    
+                    squares[row][col].addActionListener(e -> {
+                        squareClicked(currentRow, currentCol);
+                    });
+                }
+            }
+        }
         
         
     }
@@ -77,5 +98,45 @@ public class Board extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.board, 0, 0, 500, 500, null);
+    }
+    
+    public PlayableSquares getSquare(int row, int col) {
+        return squares[row][col];
+    }
+    
+    public void squareClicked(int row, int col) {
+        
+        PlayableSquares clickedSquare = squares[row][col];
+        
+        //No piece has been selected yet
+        if (selectedSquare == null) {
+            
+            if (clickedSquare.getPiece() != null) {
+                
+                selectedSquare = clickedSquare;
+                
+                System.out.println("Selected: " + row + ", " + col);
+            }
+            
+            return;
+        }
+        
+        //A piece is already selected
+        int startRow = selectedSquare.getRow();
+        int startCol = selectedSquare.getCol();
+        
+        //Try to move the piece
+        if (movement.isValidMove(startRow, startCol, row, col)) {
+            movement.movePiece(startRow, row, startCol, col);
+            System.out.println("Moved from: " + startRow + ", " + startCol + " to " + row + ", " + col);
+            
+        }
+        else
+        {
+            System.out.println("Invalid move");
+        }
+        
+        //Clear selection
+        selectedSquare = null;
     }
 }

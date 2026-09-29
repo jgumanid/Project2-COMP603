@@ -26,10 +26,13 @@ public class PlayableSquares extends JButton {
         setBorderPainted(true);
         setFocusPainted(false);
         
-        //test click for buttons
+        //test click for buttons (added in board)
+        /*
         addActionListener(e -> {
             System.out.println("Clicked square: " + row + ", " + col);
-        });
+        }); 
+        */
+
     }
 
     public int getRow() {

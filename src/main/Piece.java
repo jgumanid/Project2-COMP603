@@ -30,6 +30,10 @@ public class Piece {
         return king;
     }
     
+    public boolean isWhite(){
+        return color.equals("white");
+    }
+    
     public Image getImage(){
         return checkerImages;
     }
