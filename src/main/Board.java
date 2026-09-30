@@ -21,6 +21,10 @@ public class Board extends JPanel {
     private Movement movement;
     private PlayableSquares selectedSquare;
     
+    //false = black's turn
+    //true = whites's turn
+    private boolean whiteTurn = false;
+    
     //constructor
     public Board() {
         
@@ -113,6 +117,12 @@ public class Board extends JPanel {
             
             if (clickedSquare.getPiece() != null) {
                 
+                //Check if the piece belongs to the current player
+                if (clickedSquare.getPiece().isWhite() != whiteTurn) {
+                    System.out.println("Not your turn");
+                    return;
+                }
+                
                 selectedSquare = clickedSquare;
                 
                 System.out.println("Selected: " + row + ", " + col);
@@ -125,11 +135,44 @@ public class Board extends JPanel {
         int startRow = selectedSquare.getRow();
         int startCol = selectedSquare.getCol();
         
+        //Check if player has a capture available
+        boolean captureAvailable = movement.hasCapture(whiteTurn);
+        
+        //Check if this move is a capture
+        boolean isCapture = Math.abs(row - startRow) == 2 && Math.abs(col - startCol) == 2;
+        
+        //Must capture if there is one available
+        if (captureAvailable && !isCapture) {
+            System.out.println("You must capture");
+            selectedSquare = null;
+            return;
+        }
+        
+        
         //Try to move the piece
         if (movement.isValidMove(startRow, startCol, row, col)) {
-            movement.movePiece(startRow, row, startCol, col);
+            
+            //Check if this move is a capture
+            boolean wasCapture = Math.abs(row - startRow) == 2;
+            
+            //Move piece
+            movement.movePiece(startRow, startCol, row, col);
+            
             System.out.println("Moved from: " + startRow + ", " + startCol + " to " + row + ", " + col);
             
+            //If it was a capture, check for another capture
+            if (wasCapture && movement.hasCaptureFrom(row, col)) {
+                
+                //Keep the same player's turn
+                selectedSquare = squares[row][col];
+                
+                System.out.println("Another capture available!");
+                
+                return;
+            }
+            
+            //No more captures so end turn
+            whiteTurn = !whiteTurn;
         }
         else
         {
