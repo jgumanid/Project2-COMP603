@@ -215,5 +215,10 @@ public class Movement {
         
         //Put it on the new square
         endSquare.setPiece(piece);
+        
+        //If the piece is a king, show the king image
+        if (piece.isKing()) {
+            endSquare.updateKingImage();
+        }
     }
 }

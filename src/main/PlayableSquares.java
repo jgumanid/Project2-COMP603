@@ -66,8 +66,6 @@ public class PlayableSquares extends JButton {
     
     public void updateKingImage() {
         
-        System.out.println("Updating king image");
-        
         if (piece == null) {
             return;
         }
@@ -79,14 +77,7 @@ public class PlayableSquares extends JButton {
         } else {
             kingIcon = new ImageIcon("./resources/blackking.png");
         }
-        
-        System.out.println("Trying to load: " + kingIcon);
-        
-        
-        System.out.println("Image width: " + kingIcon.getIconWidth());
-        System.out.println("Image height: " + kingIcon.getIconHeight());
-        
-        
+
         Image image = kingIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
         
         setIcon(new ImageIcon(image));
