@@ -131,6 +131,7 @@ public class Board extends JPanel {
             return;
         }
         
+        
         //A piece is already selected
         int startRow = selectedSquare.getRow();
         int startCol = selectedSquare.getCol();
