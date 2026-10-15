@@ -217,10 +217,7 @@ public class Board extends JPanel {
                     int displayRow = whiteTurn ? row : 7 - row;
                     int displayCol = whiteTurn ? col : 7 - col;
 
-                    squares[row][col].setBounds(
-                            offsetX + displayCol * squareSize,
-                            offsetY + displayRow * squareSize,
-                            squareSize, squareSize);
+                    squares[row][col].setBounds(offsetX + displayCol * squareSize,offsetY + displayRow * squareSize, squareSize, squareSize);
                 }
             }
         }
