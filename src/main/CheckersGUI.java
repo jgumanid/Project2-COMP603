@@ -19,7 +19,7 @@ public class CheckersGUI extends JFrame {
 
     public CheckersGUI() {
         //window setup
-        setSize(690, 640); // window size
+        setSize(730, 640); // window size
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes program when close is clicked
         setLocationRelativeTo(null); //places the window at the center of the screen
         setTitle("Checkers"); //add the title Checkers on the window
