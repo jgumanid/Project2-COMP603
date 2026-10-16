@@ -63,4 +63,25 @@ public class PlayableSquares extends JButton {
 
         repaint();
     }
+    
+    public void updateKingImage() {
+        
+        if (piece == null) {
+            return;
+        }
+        
+        ImageIcon kingIcon;
+        
+        if (piece.isWhite()) {
+            kingIcon = new ImageIcon("./resources/whiteking.png");
+        } else {
+            kingIcon = new ImageIcon("./resources/blackking.png");
+        }
+
+        Image image = kingIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        
+        setIcon(new ImageIcon(image));
+        
+        repaint();
+    }
 }

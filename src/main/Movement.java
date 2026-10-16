@@ -29,6 +29,11 @@ public class Movement {
         //Get end square
         PlayableSquares endSquare = board.getSquare(endRow, endCol);
         
+        //Make sure both squares exist
+        if (startSquare == null || endSquare == null) {
+            return false;
+        }
+        
         //Must be a square at the start
         if (startSquare.getPiece() == null) { 
             return false;
@@ -47,7 +52,11 @@ public class Movement {
         
         //A normal move is exactly 1 row and one column
         if (Math.abs(rowDifference) == 1 && Math.abs(colDifference) == 1) {
-        
+            //King can move forwards AND backwards
+            if (piece.isKing()) {
+                return true;
+            }
+            
             //White moves up
             if (piece.isWhite()) {
                 return rowDifference == -1;
@@ -66,6 +75,10 @@ public class Movement {
             
             PlayableSquares middleSquare = board.getSquare(middleRow, middleCol);
             
+            if (middleSquare == null) {
+                return false;
+            }
+            
             Piece middlePiece = middleSquare.getPiece();
             
             //There must be a piece in the middle
@@ -76,6 +89,11 @@ public class Movement {
             //Middle piece must belong to opponent
             if (piece.isWhite() == middlePiece.isWhite()) {
                 return false;
+            }
+            
+             //King piece can capture both forwards and backwards
+            if (piece.isKing()) {
+                return true;
             }
             
             //White captures upwards
@@ -196,5 +214,9 @@ public class Movement {
         
         //Put it on the new square
         endSquare.setPiece(piece);
+         //If the piece is a king, show the king image
+        if (piece.isKing()) {
+            endSquare.updateKingImage();
+        }
     }
 }
