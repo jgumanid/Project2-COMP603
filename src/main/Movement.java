@@ -219,4 +219,45 @@ public class Movement {
             endSquare.updateKingImage();
         }
     }
+    
+    public boolean hasAnyMove (boolean white) {
+        
+        //Board
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                
+                PlayableSquares square = board.getSquare(row, col);
+                
+                //Check that 
+                if (square == null || square.getPiece() == null) {
+                    continue;
+                }
+                
+                Piece piece = square.getPiece();
+                
+                if (piece.isWhite() != white) {
+                    continue;
+                }
+                
+                int[] directions = {-1, 1};
+                
+                for (int rowDirection : directions) {
+                    for (int colDirection : directions) {
+                        
+                        //Check a normal move
+                        if (isValidMove(row, col, row + rowDirection, col + colDirection)) {
+                            return true;
+                        }
+                        
+                        //Check a capture
+                        if (isValidMove(row, col, row + 2 * rowDirection, col + 2 * colDirection)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
 }

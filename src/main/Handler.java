@@ -19,12 +19,19 @@ public class Handler {
     //false black's turn
     //true white's turn
     
+    private boolean gameOver = false;
+    private int noCaptureMoves = 0;
+    
     public Handler(Board board) {
         this.board = board;
         this.movement = new Movement(board);
     }
 
     public void squareClicked(int row, int col) {
+        
+        if (gameOver) {
+            return;
+        }
         
         PlayableSquares clickedSquare = board.getSquare(row, col);
         boolean whiteTurn = board.isWhiteTurn();
@@ -46,6 +53,14 @@ public class Handler {
             
             return;
         }
+        //If another piece is clicked, select that piece instead of trying to move
+        if (clickedSquare.getPiece() != null && clickedSquare.getPiece().isWhite() == whiteTurn) {
+            
+            selectedSquare = clickedSquare;
+            
+            System.out.println("Selected: " + row + ", " + col);
+            return;
+        } 
         
         //A piece is already selected
         int startRow = selectedSquare.getRow();
@@ -110,6 +125,9 @@ public class Handler {
             //No more captures so end turn
             whiteTurn = !whiteTurn;
             board.setWhiteTurn(whiteTurn);
+            
+            //Check for a win or draw
+            recordCompletedMove(wasCapture);
         }
         else
         {
@@ -118,5 +136,93 @@ public class Handler {
         
         //Clear selection
         selectedSquare = null;
+    }
+    
+    public void checkGameResult() {
+        
+        if (gameOver) {
+            return;
+        }
+        
+        boolean blackHasPieces = false;
+        boolean whiteHasPieces = false;
+        
+        //Check whether either player has any pieces left
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                
+                PlayableSquares square = board.getSquare(row, col);
+                
+                if (square == null) {
+                    continue;
+                }
+                
+                Piece piece = square.getPiece();
+                
+                if (piece != null) {
+                    if (piece.isWhite()) {
+                        whiteHasPieces = true;
+                    } else {
+                        blackHasPieces = true;
+                    }
+                }
+            }
+        }
+        
+        //Black has no pieces left
+        if (!blackHasPieces) {
+            endGame("Game over! " + board.currentPlayerName(true) + " wins! ");
+            return;
+        }
+        
+        //White has no pieces left
+        if (!whiteHasPieces) {
+            endGame("Game over! " + board.currentPlayerName(false) + " wins!");
+            return;
+        }
+        
+        //Check whether the player can move
+        boolean whiteTurn = board.isWhiteTurn();
+        
+        if (!movement.hasAnyMove(whiteTurn)) {
+            
+            String winner = board.currentPlayerName(!whiteTurn);
+            
+            endGame("Game over!" + winner + " wins because their opponent has no legal moves!");
+            
+            return;
+        }
+        
+        // If you go 80 turns without a capture
+        if (noCaptureMoves >= 80) {
+            endGame("Draw! 80 turns has passed without a capture.");
+        }
+    }
+    
+    private void endGame(String message) {
+        
+        gameOver = true;
+        selectedSquare = null;
+        
+        javax.swing.JOptionPane.showMessageDialog(board, message, "Game Over", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+    }
+    
+    public boolean isGameOver() {
+        return gameOver;
+    }
+    
+    public void recordCompletedMove(boolean wasCapture) {
+        
+        if (gameOver) {
+            return;
+        }
+        
+        if (wasCapture) {
+            noCaptureMoves = 0;
+        } else {
+            noCaptureMoves++;
+        }
+        
+        checkGameResult();
     }
 }
