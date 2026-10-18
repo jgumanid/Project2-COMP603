@@ -28,6 +28,7 @@ public class Computer {
 
         if (moves.isEmpty()) {
             System.out.println("Computer has no moves");
+            board.checkGameResult();
             return;
         }
 
@@ -54,6 +55,9 @@ public class Computer {
 
         //end the computer's turn
         board.setWhiteTurn(!white);
+        
+        //Check for a win or draw after computer finishes
+        board.recordCompletedMove(capture);
     }
     private List<int[]> getAllMoves(boolean white) {
         int distance = movement.hasCapture(white) ? 2 : 1;

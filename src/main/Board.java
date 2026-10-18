@@ -123,8 +123,16 @@ public class Board extends JPanel {
         repaint();
     }
 
-    private String currentPlayerName() {
+    public String currentPlayerName(boolean white) {
         return whiteTurn ? whiteName : blackName;
+    }
+    
+    public void checkGameResult() {
+        handler.checkGameResult();
+    }
+    
+    public void recordCompletedMove(boolean wasCapture) {
+        handler.recordCompletedMove(wasCapture);
     }
 
     //positions every square button depending on whose turn it is
