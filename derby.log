@@ -1,19 +1,13 @@
 ----------------------------------------------------------------
-Wed Oct 21 19:34:25 NZDT 2026:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-01a1-5d2b-0fbd-000000d631d8 
-on database directory C:\Users\GGPC\Downloads\assign test\Project2-COMP603\CheckersDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@50b4d649 
-Loaded from file:/C:/Users/GGPC/Downloads/assign%20test/Project2-COMP603/lib/derby.jar
+Wed Oct 21 21:39:23 NZDT 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-01a1-5d9d-76f8-000000601148 
+on database directory /Users/arthurchan/NetBeansProjects4/Project2-COMP603/CheckersDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@41e986c9 
+Loaded from file:/Users/arthurchan/NetBeansProjects4/Project2-COMP603/lib/derby.jar
 java.vendor=Eclipse Adoptium
 java.runtime.version=26.0.1+8
-user.dir=C:\Users\GGPC\Downloads\assign test\Project2-COMP603
-os.name=Windows 11
-os.arch=amd64
-os.version=10.0
+user.dir=/Users/arthurchan/NetBeansProjects4/Project2-COMP603
+os.name=Mac OS X
+os.arch=aarch64
+os.version=13.3.1
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
-----------------------------------------------------------------
-Wed Oct 21 19:34:29 NZDT 2026: Shutting down Derby engine
-----------------------------------------------------------------
-Wed Oct 21 19:34:29 NZDT 2026:
-Shutting down instance a816c00e-01a1-5d2b-0fbd-000000d631d8 on database directory C:\Users\GGPC\Downloads\assign test\Project2-COMP603\CheckersDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@50b4d649 
-----------------------------------------------------------------

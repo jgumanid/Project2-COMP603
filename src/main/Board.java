@@ -43,6 +43,12 @@ public class Board extends JPanel {
     private String whiteStats = "";
 
     private GameTimer timer;
+    
+    private CapturedPiecesPanel capturedPanel;
+    
+    private String boardTheme = "Classic";
+    private boolean highlightLegalMoves = true;
+    private boolean confirmBeforeLeaving = true;
 
     //constructor
     public Board(CheckersGUI gui, DBManager db) {
@@ -51,7 +57,7 @@ public class Board extends JPanel {
         //button to go back to menu
         JButton exitButton = new JButton("Leave Game");
         exitButton.setBounds(525, 20, 90, 30);
-        exitButton.addActionListener(e -> gui.showMenu());
+        exitButton.addActionListener(e -> leaveGame());
         add(exitButton);
 
         //load image of the board and ui of player
@@ -59,6 +65,10 @@ public class Board extends JPanel {
         playerUI = new ImageIcon("./resources/playerui.png").getImage();
         setLayout(null);
         setBackground(Color.GRAY);
+        // Panel displaying captured pieces on the side
+        capturedPanel = new CapturedPiecesPanel();
+        capturedPanel.setBounds(500, 120, 155, 350);
+        add(capturedPanel);
         //sets the grid
         squares = new PlayableSquares[8][8];
 
@@ -181,6 +191,7 @@ public class Board extends JPanel {
     }
 
     public void resetGame() {
+        resetCapturedPieces();
         setupPieces();
         setWhiteTurn(false);   // black starts, and this re-flips the board
         handler.reset();
@@ -225,5 +236,56 @@ public class Board extends JPanel {
 
     public void stopTimer() {
         timer.stop();
+    }
+    
+    //Records a captured piece in the side panel
+    public void recordCapturedPiece(Piece piece) {
+        capturedPanel.addCapturedPiece(piece);
+    }
+    
+    public void resetCapturedPieces() {
+        capturedPanel.reset();
+    }
+    
+    public void applySettings(String theme, boolean highlight, boolean confirm) {
+        
+        boardTheme = theme;
+        highlightLegalMoves = highlight;
+        confirmBeforeLeaving = confirm;
+        
+        //Only have 1 board at the moment
+        board = new ImageIcon("./resources/board/board_plain_01.png").getImage();
+        
+        repaint();
+    }
+    
+    public String getBoardTheme() {
+        return boardTheme;
+    }
+    
+    public boolean isHighlightLegalMoves() {
+        return highlightLegalMoves;
+    }
+    
+    public boolean isConfirmBeforeLeaving() {
+        return confirmBeforeLeaving;
+    }
+    
+    private void leaveGame() {
+        if (confirmBeforeLeaving) {
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to leave the game?",
+                    "Leave Game",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            
+            if (choice != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+        
+        timer.stop();
+        gui.showMenu();
     }
 }

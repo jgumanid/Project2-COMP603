@@ -79,7 +79,13 @@ public class Handler {
 
     private void selectPiece(PlayableSquares square, boolean whiteTurn) {
         selectedSquare = square;
-        highlighter.showMoves(square.getRow(), square.getCol(), movement.hasCapture(whiteTurn));
+        
+        highlighter.clear();
+        
+        if (board.isHighlightLegalMoves()) {
+            highlighter.showMoves(square.getRow(), square.getCol(), movement.hasCapture(whiteTurn));
+        }
+        
         System.out.println("Selected: " + square.getRow() + ", " + square.getCol());
     }
 
@@ -150,7 +156,13 @@ public class Handler {
     private void continueCapture(int row, int col) {
         //same player keeps the turn and must keep jumping with this piece
         selectedSquare = board.getSquare(row, col);
-        highlighter.showMoves(row, col, true);
+        
+        highlighter.clear();
+        
+        if (board.isHighlightLegalMoves()) {
+            highlighter.showMoves(row, col, true);
+        }
+        
         System.out.println("Another capture available!");
     }
 
