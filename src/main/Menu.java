@@ -68,8 +68,7 @@ public class Menu extends JPanel {
 
         statsButton.addActionListener(e -> showStats());
 
-        settingsButton.addActionListener(e
-                -> System.out.println("Settings selected"));
+        settingsButton.addActionListener(e -> gui.showSettings());
 
         exitButton.addActionListener(e
                 -> System.exit(0));

@@ -19,6 +19,7 @@ public class CheckersGUI extends JFrame {
     private Board board; //handles the board panel
     private Menu menu; //handles the menu panel
     private DBManager db; //handles databasemanager
+    private Settings settings; //handles settings panel
 
     public CheckersGUI() {
         db = new DBManager();
@@ -26,10 +27,12 @@ public class CheckersGUI extends JFrame {
         button();
         board = new Board(this, db); //creates the board
         menu = new Menu(this); //creates the menu
+        settings = new Settings(this);
 
         mainPanel = new JPanel(new CardLayout()); //holds multiple screens, used to switch between panels.
         mainPanel.add(menu, "Menu");//panel for Menu
         mainPanel.add(board, "Board");//panel for board
+        mainPanel.add(settings, "Settings");//panel for settings
         add(mainPanel);//put panel inside the window
         showMenu();//shows the menu panel first
     }
@@ -79,5 +82,17 @@ public class CheckersGUI extends JFrame {
                 db.close();
             }
         });
+    }
+    
+    public void showSettings() {
+        settings.loadSettings(board.getBoardTheme(), board.isHighlightLegalMoves(), board.isConfirmBeforeLeaving());
+        
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        
+        cardLayout.show(mainPanel, "Settings");
+    }
+    
+    public void applySettings(String theme, boolean highlight, boolean confirm) {
+        board.applySettings(theme, highlight, confirm);
     }
 }
