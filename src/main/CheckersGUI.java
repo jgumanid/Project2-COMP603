@@ -27,7 +27,7 @@ public class CheckersGUI extends JFrame {
         button();
         board = new Board(this, db); //creates the board
         menu = new Menu(this); //creates the menu
-        settings = new Settings(this);
+        settings = new Settings(this, board);
 
         mainPanel = new JPanel(new CardLayout()); //holds multiple screens, used to switch between panels.
         mainPanel.add(menu, "Menu");//panel for Menu

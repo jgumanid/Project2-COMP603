@@ -7,6 +7,7 @@ package main;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Map;
 import javax.swing.*;
 
 /**
@@ -43,9 +44,9 @@ public class Board extends JPanel {
     private String whiteStats = "";
 
     private GameTimer timer;
-    
+
     private CapturedPiecesPanel capturedPanel;
-    
+
     private String boardTheme = "Classic";
     private boolean highlightLegalMoves = true;
     private boolean confirmBeforeLeaving = true;
@@ -54,6 +55,10 @@ public class Board extends JPanel {
     public Board(CheckersGUI gui, DBManager db) {
         this.gui = gui;
         this.db = db;
+        panelSetup();
+    }
+    
+    public void panelSetup(){
         //button to go back to menu
         JButton exitButton = new JButton("Leave Game");
         exitButton.setBounds(525, 20, 90, 30);
@@ -237,40 +242,48 @@ public class Board extends JPanel {
     public void stopTimer() {
         timer.stop();
     }
-    
+
     //Records a captured piece in the side panel
     public void recordCapturedPiece(Piece piece) {
         capturedPanel.addCapturedPiece(piece);
     }
-    
+
     public void resetCapturedPieces() {
         capturedPanel.reset();
     }
-    
+
+    private static final Map<String, String> BOARD_FILES = Map.of(
+            "Classic", "board_plain_01.png",
+            "Dirty White", "board_plain_02.png",
+            "Navy Blue", "board_plain_03.png",
+            "Porcelain", "board_plain_04.png",
+            "Wood", "board_plain_05.png"
+    );
+
     public void applySettings(String theme, boolean highlight, boolean confirm) {
-        
+
         boardTheme = theme;
         highlightLegalMoves = highlight;
         confirmBeforeLeaving = confirm;
-        
-        //Only have 1 board at the moment
-        board = new ImageIcon("./resources/board/board_plain_01.png").getImage();
-        
+
+        String file = BOARD_FILES.getOrDefault(theme, "board_plain_01.png");
+        board = new ImageIcon("./resources/boards/" + file).getImage();
+
         repaint();
     }
-    
+
     public String getBoardTheme() {
         return boardTheme;
     }
-    
+
     public boolean isHighlightLegalMoves() {
         return highlightLegalMoves;
     }
-    
+
     public boolean isConfirmBeforeLeaving() {
         return confirmBeforeLeaving;
     }
-    
+
     private void leaveGame() {
         if (confirmBeforeLeaving) {
             int choice = JOptionPane.showConfirmDialog(
@@ -279,12 +292,12 @@ public class Board extends JPanel {
                     "Leave Game",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
-            
+
             if (choice != JOptionPane.YES_OPTION) {
                 return;
             }
         }
-        
+
         timer.stop();
         gui.showMenu();
     }

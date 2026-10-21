@@ -73,7 +73,6 @@ public class CapturedPiecesPanel extends JPanel {
     
 private void drawPieces(Graphics g, ArrayList<Piece> pieces,
                         int startX, int startY) {
-
     int pieceSize = 28;
     int gap = 7;
     int columns = 4;
