@@ -102,13 +102,10 @@ public class Menu extends JPanel {
                 return false;
             }
         };
-
         int rank = 1;
         for (DBManager.PlayerStats s : stats) {
-            model.addRow(new Object[]{rank++, s.name, s.gamesPlayed, s.wins,
-                s.losses, s.draws, s.winStreak});
+            model.addRow(new Object[]{rank++, s.name, s.gamesPlayed, s.wins, s.losses, s.draws, s.winStreak});
         }
-
         JTable table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.setRowHeight(24);

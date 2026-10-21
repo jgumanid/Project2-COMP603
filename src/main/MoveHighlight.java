@@ -67,8 +67,8 @@ public class MoveHighlight {
 
         square.setHighlight(INVALID_COLOR);
 
-        //remove the red after 400ms (only if it's still red)
-        javax.swing.Timer timer = new javax.swing.Timer(400, e -> {
+        //remove the red highligh after 200ms (only if it's still red)
+        javax.swing.Timer timer = new javax.swing.Timer(200, e -> {
             if (square.getHighlight() == INVALID_COLOR) {
                 square.setHighlight(null);
             }

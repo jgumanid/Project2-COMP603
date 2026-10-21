@@ -31,6 +31,8 @@ public class Handler {
 
     }
 
+    
+    //reads current square on the board  that is clicked
     public void squareClicked(int row, int col) {
         if (gameOver) {
             return;
@@ -55,7 +57,10 @@ public class Handler {
         tryMove(clicked, whiteTurn);
     }
 
-// ---------- selecting ----------
+
+    //this section is selection of pieces
+    //allows player to switch between own pieces
+    //it prevents program not get an invalid move if selecting another piece
     private boolean isOwnPiece(PlayableSquares square, boolean whiteTurn) {
         Piece piece = square.getPiece();
         return piece != null && piece.isWhite() == whiteTurn;
@@ -78,7 +83,11 @@ public class Handler {
         System.out.println("Selected: " + square.getRow() + ", " + square.getCol());
     }
 
-// ---------- moving ----------
+
+    //this is the methods for moving a piece
+    //checks if the target square is neutral to allow the move
+    //also checks if there is currently a capture available on the board
+    //priotises captures and rejects invalid moves(occupied, distant sq, blocked, etc)
     private void tryMove(PlayableSquares target, boolean whiteTurn) {
         int startRow = selectedSquare.getRow();
         int startCol = selectedSquare.getCol();
@@ -111,7 +120,7 @@ public class Handler {
     private void executeMove(int startRow, int startCol, int endRow, int endCol,
             boolean wasCapture, boolean whiteTurn) {
         movement.movePiece(startRow, startCol, endRow, endCol);
-        promoteIfNeeded(endRow, endCol);
+        promote(endRow, endCol);
         System.out.println("Moved from: " + startRow + ", " + startCol + " to " + endRow + ", " + endCol);
 
         if (wasCapture && movement.hasCaptureFrom(endRow, endCol)) {
@@ -122,9 +131,8 @@ public class Handler {
         endTurn(whiteTurn, wasCapture);
     }
 
-// ---------- results of a move ----------
-//returns true if the piece was promoted by this move
-    private boolean promoteIfNeeded(int row, int col) {
+    //returns true if the piece was promoted by this move
+    private boolean promote(int row, int col) {
         PlayableSquares square = board.getSquare(row, col);
         Piece piece = square.getPiece();
 
@@ -154,11 +162,9 @@ public class Handler {
     }
 
     public void checkGameResult() {
-
         if (gameOver) {
             return;
         }
-
         boolean blackHasPieces = false;
         boolean whiteHasPieces = false;
 
@@ -171,9 +177,8 @@ public class Handler {
                 if (square == null) {
                     continue;
                 }
-
+                
                 Piece piece = square.getPiece();
-
                 if (piece != null) {
                     if (piece.isWhite()) {
                         whiteHasPieces = true;
@@ -191,14 +196,14 @@ public class Handler {
             return;
         }
 
-//White has no pieces left
+        //White has no pieces left
         if (!whiteHasPieces) {
             String winner = board.winnerPlayerName(false);
             endGame("Game over! " + winner + " wins!", winner);
             return;
         }
 
-//Check whether the player can move
+        //Check whether the player can move
         boolean whiteTurn = board.isWhiteTurn();
 
         if (!movement.hasAnyMove(whiteTurn)) {
@@ -207,19 +212,22 @@ public class Handler {
             return;
         }
 
-// Draw
+        // Draw
         if (noCaptureMoves >= 80) {   // change back to 80 when done testing
             endGame("Draw! 80 turns has passed without a capture.", null);
         }
     }
 
+    //shows a window if players want to go back to menu or have a rematch]
+    //cleans, resets board and pcs, updates database(stats)
     private void endGame(String message, String winnerName) {
 
         gameOver = true;
+        board.stopTimer();
         highlighter.clear();
         selectedSquare = null;
         db.recordGame(board.getBlackName(), board.getWhiteName(), winnerName);
-
+        
         Object[] options = {"Rematch", "Main Menu"};
         int choice = javax.swing.JOptionPane.showOptionDialog(
                 board, message, "Game Over",
@@ -229,6 +237,7 @@ public class Handler {
 
         if (choice == 0) {
             board.resetGame();
+            board.refreshStats();
         } else if (choice == 1) {
             board.returnToMenu();
         }
@@ -238,6 +247,7 @@ public class Handler {
         return gameOver;
     }
 
+    //records move to checks and keeps track for a draw
     public void recordCompletedMove(boolean wasCapture) {
         if (gameOver) {
             return;
@@ -251,6 +261,7 @@ public class Handler {
         checkGameResult();
     }
 
+    //reset the game 
     public void reset() {
         gameOver = false;
         noCaptureMoves = 0;

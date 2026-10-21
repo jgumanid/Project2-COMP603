@@ -42,14 +42,16 @@ public class Board extends JPanel {
     private String blackStats = "";        // new
     private String whiteStats = "";
 
+    private GameTimer timer;
+
     //constructor
     public Board(CheckersGUI gui, DBManager db) {
         this.gui = gui;
         this.db = db;
         //button to go back to menu
-        JButton exitButton = new JButton("Exit");
+        JButton exitButton = new JButton("Leave Game");
         exitButton.setBounds(525, 20, 90, 30);
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(e -> gui.showMenu());
         add(exitButton);
 
         //load image of the board and ui of player
@@ -59,6 +61,8 @@ public class Board extends JPanel {
         setBackground(Color.GRAY);
         //sets the grid
         squares = new PlayableSquares[8][8];
+
+        timer = new GameTimer(this);
 
         //aligns the button grid to the board image
         //scale each buttons size by 56x56
@@ -109,6 +113,10 @@ public class Board extends JPanel {
         g.setFont(new java.awt.Font("Comic Sans MS", java.awt.Font.BOLD, 14));
         g.drawString(blackStats, 80, 560);
         g.drawString(whiteStats, 395, 560);
+
+        g.setFont(new java.awt.Font("Comic Sans MS", java.awt.Font.BOLD, 18));
+        g.setColor(java.awt.Color.WHITE);
+        g.drawString("Time: " + timer.getFormattedTime(), 525, 80);
     }
 
     public PlayableSquares getSquare(int row, int col) {
@@ -176,6 +184,8 @@ public class Board extends JPanel {
         setupPieces();
         setWhiteTurn(false);   // black starts, and this re-flips the board
         handler.reset();
+        timer.start();
+        refreshStats();
     }
 
     public void returnToMenu() {
@@ -211,5 +221,9 @@ public class Board extends JPanel {
             return "W: 0  L: 0  D: 0";
         }
         return "W: " + s.wins + "  L: " + s.losses + "  D: " + s.draws;
+    }
+
+    public void stopTimer() {
+        timer.stop();
     }
 }
