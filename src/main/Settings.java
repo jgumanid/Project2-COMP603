@@ -121,4 +121,26 @@ public class Settings extends JPanel {
         confirmLeave.setSelected(confirm);
         boardTheme.setSelectedItem(theme);
     }
+    
+    String getSelectedBoardTheme() {
+        return (String) boardTheme.getSelectedItem();
+    }
+    
+    boolean isHighlightedMovesSelected() {
+        return highlightMoves.isSelected();
+    }
+    
+    boolean isConfirmLeaveSelected() {
+        return confirmLeave.isSelected();
+    }
+    
+    String[] getAvailableThemes() {
+        String[] themes = new String[boardTheme.getItemCount()];
+        
+        for (int i = 0; i < boardTheme.getItemCount(); i++) {
+            themes[i] = boardTheme.getItemAt(i);
+        }
+        
+        return themes;
+    }
 }

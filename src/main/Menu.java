@@ -95,7 +95,7 @@ public class Menu extends JPanel {
         // sort by win/loss ratio, highest first
         stats.sort((a, b) -> Double.compare(winLossRatio(b), winLossRatio(a)));
 
-        String[] columns = {"Player", "Played", "Wins", "Losses", "Draws", "Win Streak", "W/L Ratio"};
+        String[] columns = {"Player", "Played", "Wins", "Losses", "Draws", "Win Streak", "Winrate(%)"};
 
         // cells are read-only
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(columns, 0) {
@@ -106,7 +106,7 @@ public class Menu extends JPanel {
         };
 
         for (DBManager.PlayerStats s : stats) {
-            model.addRow(new Object[]{s.name,s.gamesPlayed,s.wins,s.losses,s.draws,s.winStreak});
+            model.addRow(new Object[]{s.name, s.gamesPlayed, s.wins, s.losses, s.draws, s.winStreak, String.format("%.1f%%", winPercent(s))});
         }
 
         JTable table = new JTable(model);
@@ -125,4 +125,7 @@ public class Menu extends JPanel {
         return s.losses == 0 ? s.wins : (double) s.wins / s.losses;
     }
 
+    private double winPercent(DBManager.PlayerStats s) {
+        return s.gamesPlayed == 0 ? 0.0 : (s.wins * 100.0) / s.gamesPlayed;
+    }
 }
