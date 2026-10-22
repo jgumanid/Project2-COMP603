@@ -51,8 +51,10 @@ public class Settings extends JPanel {
         boardTheme.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         boardTheme.addActionListener(e -> {
-            String theme = (String) boardTheme.getSelectedItem();
-            gui.applySettings(theme, highlightMoves.isSelected(), confirmLeave.isSelected());
+            if (gui != null) {
+                String theme = (String) boardTheme.getSelectedItem();
+                gui.applySettings(theme, highlightMoves.isSelected(), confirmLeave.isSelected());
+            }
         });
         
         highlightMoves = new JCheckBox("Highlight legal moves");
@@ -120,5 +122,27 @@ public class Settings extends JPanel {
         highlightMoves.setSelected(highlight);
         confirmLeave.setSelected(confirm);
         boardTheme.setSelectedItem(theme);
+    }
+    
+    String getSelectedBoardTheme() {
+        return (String) boardTheme.getSelectedItem();
+    }
+    
+    boolean isHighlightedMovesSelected() {
+        return highlightMoves.isSelected();
+    }
+    
+    boolean isConfirmLeaveSelected() {
+        return confirmLeave.isSelected();
+    }
+    
+    String[] getAvailableThemes() {
+        String[] themes = new String[boardTheme.getItemCount()];
+        
+        for (int i = 0; i < boardTheme.getItemCount(); i++) {
+            themes[i] = boardTheme.getItemAt(i);
+        }
+        
+        return themes;
     }
 }
