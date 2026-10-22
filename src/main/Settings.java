@@ -51,8 +51,10 @@ public class Settings extends JPanel {
         boardTheme.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         boardTheme.addActionListener(e -> {
-            String theme = (String) boardTheme.getSelectedItem();
-            gui.applySettings(theme, highlightMoves.isSelected(), confirmLeave.isSelected());
+            if (gui != null) {
+                String theme = (String) boardTheme.getSelectedItem();
+                gui.applySettings(theme, highlightMoves.isSelected(), confirmLeave.isSelected());
+            }
         });
         
         highlightMoves = new JCheckBox("Highlight legal moves");

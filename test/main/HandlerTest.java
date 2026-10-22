@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  * @author arthurchan
  */
 public class HandlerTest {
-    
+
     private Board board;
     private Handler handler;
     
