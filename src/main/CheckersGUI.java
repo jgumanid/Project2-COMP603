@@ -6,6 +6,8 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -14,26 +16,24 @@ import java.awt.*;
 public class CheckersGUI extends JFrame {
 
     private JPanel mainPanel; //makes a main panel so we can change between two panels
-    private Board board; //initialise the board panel
-    private Menu menu; //initiialise the menu panel
+    private Board board; //handles the board panel
+    private Menu menu; //handles the menu panel
+    private DBManager db; //handles databasemanager
+    private Settings settings; //handles settings panel
 
     public CheckersGUI() {
-        //window setup
-        setSize(690, 640); // window size
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes program when close is clicked
-        setLocationRelativeTo(null); //places the window at the center of the screen
-        setTitle("Checkers"); //add the title Checkers on the window
-
-        board = new Board(); //creates the board
+        db = new DBManager();
+        
+        button();
+        board = new Board(this, db); //creates the board
         menu = new Menu(this); //creates the menu
+        settings = new Settings(this, board);
 
         mainPanel = new JPanel(new CardLayout()); //holds multiple screens, used to switch between panels.
-
         mainPanel.add(menu, "Menu");//panel for Menu
         mainPanel.add(board, "Board");//panel for board
-
+        mainPanel.add(settings, "Settings");//panel for settings
         add(mainPanel);//put panel inside the window
-
         showMenu();//shows the menu panel first
     }
 
@@ -54,8 +54,45 @@ public class CheckersGUI extends JFrame {
         cg.setVisible(true);
     }
 
+    //returns database manager for other class
+    public DBManager getDb() {
+        return db;
+    }
+
+    //starts the game and reads the players names for the database
     public void startGame(String player1, String player2) {
+        db.addPlayer(player1);
+        db.addPlayer(player2);
+        board.resetGame();
         board.setPlayerNames(player1, player2);
         showBoard();
+    }
+    
+    public void button(){
+        //window setup
+        setSize(665, 623); // window size
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //closes program when close is clicked
+        setLocationRelativeTo(null); //places the window at the center of the screen
+        setTitle("Checkers"); //add the title Checkers on the window
+
+        //closes database on close
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                db.close();
+            }
+        });
+    }
+    
+    public void showSettings() {
+        settings.loadSettings(board.getBoardTheme(), board.isHighlightLegalMoves(), board.isConfirmBeforeLeaving());
+        
+        CardLayout cardLayout = (CardLayout) mainPanel.getLayout();
+        
+        cardLayout.show(mainPanel, "Settings");
+    }
+    
+    public void applySettings(String theme, boolean highlight, boolean confirm) {
+        board.applySettings(theme, highlight, confirm);
     }
 }

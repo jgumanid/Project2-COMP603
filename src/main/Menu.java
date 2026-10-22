@@ -12,10 +12,11 @@ import java.awt.*;
  * @author GGPC
  */
 public class Menu extends JPanel {
-    
+
     private JButton twoPlayerButton; //button for two player mode
     private JButton settingsButton; //button for settings
     private JButton exitButton; //exit button
+    private JButton statsButton;
     private CheckersGUI gui; //reference to the main panel
     public Image menu; //bg image for menu
 
@@ -24,21 +25,25 @@ public class Menu extends JPanel {
         menu = new ImageIcon("./resources/menu_background.png").getImage();
         this.gui = gui; //window reference for action listeners
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); //makethe components stack vertically in order
-        setBackground(Color.DARK_GRAY); //color of button
-
+        setBackground(Color.DARK_GRAY);
 
         twoPlayerButton = new JButton("Start Game"); //start button
+        statsButton = new JButton("Stats");
         settingsButton = new JButton("Settings"); //settings button
         exitButton = new JButton("Exit"); //exit button
-        
+
         //sets the buttons at the center of the screen horizontally 
         twoPlayerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        statsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(Box.createVerticalGlue()); //space in panel grows or shrink depending of the number of buttons
 
-        add(twoPlayerButton); 
+        add(twoPlayerButton);
+        add(Box.createRigidArea(new Dimension(0, 10)));
+
+        add(statsButton);
         add(Box.createRigidArea(new Dimension(0, 10)));
 
         add(settingsButton);
@@ -50,32 +55,77 @@ public class Menu extends JPanel {
 
         // just placeholders
         twoPlayerButton.addActionListener(e -> {
-            String player1 = askName("Player 1: Name?",  "Player 1");
-            if(player1 == null) return;
-            String player2 = askName("Player 2: Name?",  "Player 2");
-            if(player2==null) return;
+            String player1 = askName("Player 1: Name?", "Player 1");
+            if (player1 == null) {
+                return;
+            }
+            String player2 = askName("Player 2: Name?", "Player 2");
+            if (player2 == null) {
+                return;
+            }
             gui.startGame(player1, player2);
         });
 
-        settingsButton.addActionListener(e
-                -> System.out.println("Settings selected"));
+        statsButton.addActionListener(e -> showStats());
+
+        settingsButton.addActionListener(e -> gui.showSettings());
 
         exitButton.addActionListener(e
                 -> System.exit(0));
     }
-    
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(this.menu, 0, 0, 715, 600, null);
+        g.drawImage(this.menu, 0, 0, 650, 590, null);
     }
-    
-    private String askName(String message, String defaultName){
+
+    private String askName(String message, String defaultName) {
         String name = JOptionPane.showInputDialog(this, message, "Enter Name", JOptionPane.QUESTION_MESSAGE);
-        if(name == null){
+        if (name == null) {
             return null;
         }
-        
+
         name = name.trim();
         return name.isEmpty() ? defaultName : name;
+    }
+
+    private void showStats() {
+        java.util.List<DBManager.PlayerStats> stats = gui.getDb().getLeaderboard(50);
+
+        // sort by win/loss ratio, highest first
+        stats.sort((a, b) -> Double.compare(winLossRatio(b), winLossRatio(a)));
+
+        String[] columns = {"Player", "Games Played", "Wins", "Losses", "Draws", "Win Streak", "Winrate(%)"};
+
+        // cells are read-only
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (DBManager.PlayerStats s : stats) {
+            model.addRow(new Object[]{s.name, s.gamesPlayed, s.wins, s.losses, s.draws, s.winStreak, String.format("%.1f%%", winPercent(s))});
+        }
+
+        JTable table = new JTable(model);
+        table.setFillsViewportHeight(true);
+        table.setRowHeight(24);
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(520, 250));
+
+        JOptionPane.showMessageDialog(this, scroll, "Player Stats", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    // Wins divided by losses. With zero losses, the ratio is just the win count
+    // so undefeated players still sort sensibly.
+    private double winLossRatio(DBManager.PlayerStats s) {
+        return s.losses == 0 ? s.wins : (double) s.wins / s.losses;
+    }
+
+    private double winPercent(DBManager.PlayerStats s) {
+        return s.gamesPlayed == 0 ? 0.0 : (s.wins * 100.0) / s.gamesPlayed;
     }
 }

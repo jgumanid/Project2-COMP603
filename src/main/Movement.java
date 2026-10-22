@@ -206,6 +206,12 @@ public class Movement {
             
             PlayableSquares middleSquare = board.getSquare(middleRow, middleCol);
             
+            // save the captured piece 
+            Piece capturedPiece = middleSquare.getPiece();
+            
+            // add the captured piece to side panel
+            board.recordCapturedPiece(capturedPiece);
+            
             middleSquare.setPiece(null);
         }
         
