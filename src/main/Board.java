@@ -252,7 +252,7 @@ public class Board extends JPanel {
         capturedPanel.reset();
     }
 
-    private static final Map<String, String> BOARD_FILES = Map.of(
+    private static final Map<String, String> boardFiles = Map.of(
             "Classic", "board_plain_01.png",
             "Dirty White", "board_plain_02.png",
             "Navy Blue", "board_plain_03.png",
@@ -266,7 +266,7 @@ public class Board extends JPanel {
         highlightLegalMoves = highlight;
         confirmBeforeLeaving = confirm;
 
-        String file = BOARD_FILES.getOrDefault(theme, "board_plain_01.png");
+        String file = boardFiles.getOrDefault(theme, "board_plain_01.png");
         board = new ImageIcon("./resources/boards/" + file).getImage();
 
         repaint();

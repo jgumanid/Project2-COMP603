@@ -95,7 +95,7 @@ public class Menu extends JPanel {
         // sort by win/loss ratio, highest first
         stats.sort((a, b) -> Double.compare(winLossRatio(b), winLossRatio(a)));
 
-        String[] columns = {"Player", "Played", "Wins", "Losses", "Draws", "Win Streak", "Winrate(%)"};
+        String[] columns = {"Player", "Games Played", "Wins", "Losses", "Draws", "Win Streak", "Winrate(%)"};
 
         // cells are read-only
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(columns, 0) {
