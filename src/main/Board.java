@@ -39,8 +39,8 @@ public class Board extends JPanel {
 
     private CheckersGUI gui;
 
-    private DBManager db;                  // new
-    private String blackStats = "";        // new
+    private DBManager db;
+    private String blackStats = "";
     private String whiteStats = "";
 
     private GameTimer timer;

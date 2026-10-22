@@ -92,7 +92,10 @@ public class Menu extends JPanel {
     private void showStats() {
         java.util.List<DBManager.PlayerStats> stats = gui.getDb().getLeaderboard(50);
 
-        String[] columns = {"Rank", "Player", "Played", "Wins", "Losses", "Draws", "Win Streak"};
+        // sort by win/loss ratio, highest first
+        stats.sort((a, b) -> Double.compare(winLossRatio(b), winLossRatio(a)));
+
+        String[] columns = {"Player", "Played", "Wins", "Losses", "Draws", "Win Streak", "W/L Ratio"};
 
         // cells are read-only
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(columns, 0) {
@@ -101,17 +104,25 @@ public class Menu extends JPanel {
                 return false;
             }
         };
-        int rank = 1;
+
         for (DBManager.PlayerStats s : stats) {
-            model.addRow(new Object[]{rank++, s.name, s.gamesPlayed, s.wins, s.losses, s.draws, s.winStreak});
+            model.addRow(new Object[]{s.name,s.gamesPlayed,s.wins,s.losses,s.draws,s.winStreak});
         }
+
         JTable table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.setRowHeight(24);
 
         JScrollPane scroll = new JScrollPane(table);
-        scroll.setPreferredSize(new Dimension(480, 250));
+        scroll.setPreferredSize(new Dimension(520, 250));
 
         JOptionPane.showMessageDialog(this, scroll, "Player Stats", JOptionPane.PLAIN_MESSAGE);
     }
+
+    // Wins divided by losses. With zero losses, the ratio is just the win count
+    // so undefeated players still sort sensibly.
+    private double winLossRatio(DBManager.PlayerStats s) {
+        return s.losses == 0 ? s.wins : (double) s.wins / s.losses;
+    }
+
 }

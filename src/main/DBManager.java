@@ -233,8 +233,7 @@ public class DBManager {
     //positioned in a valid row
     private PlayerStats readStats(ResultSet rs) throws SQLException {
         return new PlayerStats(rs.getString("PLAYER_NAME"), rs.getInt("GAMES_PLAYED"),
-                rs.getInt("WINS"), rs.getInt("LOSSES"), rs.getInt("DRAWS"),
-                rs.getInt("WIN_STREAK"));
+                rs.getInt("WINS"), rs.getInt("LOSSES"), rs.getInt("DRAWS"), rs.getInt("WIN_STREAK"));
     }
     
     //closes the database and shut down embedded db. Calls it when application exits

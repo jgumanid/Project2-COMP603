@@ -9,7 +9,7 @@ import javax.swing.*;
 
 /**
  *
- * @author GGPC
+ * @authorarthurchan
  */
 public class Piece {
     private String color;
